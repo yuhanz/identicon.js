@@ -1,0 +1,74 @@
+<div id="svg">
+</div>
+
+<script>
+var s = "1yuhanmw2,3,32";
+
+values = [0,0]
+for(var i=0;i<s.length;i++) {
+    values[i%2] += s.charCodeAt(i)
+}
+
+values[0] = values[0] %= 512
+values[1] = values[1] %= 512
+
+bits = []
+for(var i=0;i<values.length;i++) {
+    var v = values[i];
+    for(var j=0;j<9;j++) {
+        bits.push((v & 1 << j)>>j);
+    }
+}
+
+//
+
+var grid = []
+for(var i=0;i<15;i+=3) {
+    grid.push(bits[i], bits[i+1],bits[i+2], bits[i+1], bits[i])
+}
+
+
+//
+size = 15;
+
+width = size * 5;
+height = size * 5;
+
+//var grid = [];
+//for(var i=0;i<25;i++) {
+//    grid[i] = Math.random() > 0.5;
+//}
+
+
+colors = [];
+for(var i=1;i<7;i++) {
+	var c = "#";
+	for(var j=0;j<3;j++) {
+		c += (i>>j)%2 > 0 ? "FF": "00";
+	}
+	colors.push(c);
+}
+
+
+colorIndex = bits[15] + bits[16]<<1 + bits[17]<<2
+bgColor = '#FFFFFF';
+color = colors[colorIndex%colors.length];
+
+
+var html = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="' + width + '" height="'+ height +'">';
+
+html += '<rect width="' + width + '" height="' + height + '" style="fill:'+ bgColor + ';stroke-width:1;stroke:' + bgColor + '"/>';
+
+// draw content
+for(var i=0;i<25;i++) {
+    var row = Math.floor(i / 5);
+    var col = i % 5;
+
+    if(grid[i]) {
+        html += '<rect x="' + col * size +'" y="'+ row * size +'" width="'+size +'" height="'+size+'" style="fill:'+ color +';stroke-width:0;"/>';
+    }
+}
+html += '</svg>'
+
+document.getElementById("svg").innerHTML = html;
+</script>
